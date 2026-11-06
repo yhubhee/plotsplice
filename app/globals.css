@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-paper: #f7f2e8;
+  --color-paper-deep: #eee6d5;
+  --color-page-white: #fffcf5;
+  --color-ink-green: #1f3b2d;
+  --color-ink-green-deep: #162b20;
+  --color-moss: #4e6b55;
+  --color-gold: #c9a24a;
+  --color-gold-deep: #7e6019; /* gold dark enough for text on paper (AA) */
+  --color-error: #9b2c1f;
+  --color-ink: #1c1c19;
+  --color-ink-soft: #4b4b43;
+
+  --font-display: var(--font-gloock);
+  --font-sans: var(--font-instrument-sans);
+
+  /* Soft shadow tinted with the ink green, never flat grey. */
+  --shadow-card: 0 1px 2px rgb(31 59 45 / 0.06), 0 14px 34px -14px rgb(31 59 45 / 0.22);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 6rem;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* In the base layer so Tailwind utilities can override these. */
+@layer base {
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    color: var(--color-ink-green);
+    letter-spacing: -0.012em;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold-deep);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .on-dark :focus-visible {
+    outline-color: var(--color-gold);
+  }
+}
+
+/* Shared page width and gutter. */
+.page {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+@media (min-width: 768px) {
+  .page {
+    padding-inline: 2rem;
+  }
+}
+
+/* Gloock's hairlines vanish below about 30px (the H crossbar goes first).
+   A fine stroke and looser spacing keep small sizes readable. */
+.display-small {
+  font-family: var(--font-display);
+  -webkit-text-stroke: 0.35px currentColor;
+  letter-spacing: 0.012em;
+}
+
+/* A running stitch: the gold thread going in and out of the page. */
+.stitch-x {
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--color-gold) 0 20px, transparent 20px 30px);
+}
+
+.stitch-y {
+  width: 2px;
+  background: repeating-linear-gradient(180deg, var(--color-gold) 0 20px, transparent 20px 30px);
+}
+
+/* ---- Hero thread: the one animated moment on the page. ---- */
+.thread-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: thread-draw 1.9s cubic-bezier(0.55, 0.05, 0.3, 1) 0.25s forwards;
+}
+
+@keyframes thread-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---- The shelf ---- */
+.spine {
+  transition: transform 180ms ease-out;
+}
+
+/* Light falling across a rounded cloth spine. */
+.spine::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    90deg,
+    rgb(0 0 0 / 0.2),
+    transparent 16%,
+    rgb(255 255 255 / 0.09) 48%,
+    transparent 84%,
+    rgb(0 0 0 / 0.2)
+  );
+}
+
+.spine:hover,
+.spine:focus-visible {
+  transform: translateY(-12px);
+}
+
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-item[open] .faq-icon {
+  transform: rotate(45deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .thread-draw {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+
+  .spine,
+  .faq-icon,
+  .slide-panel {
+    transition: none !important;
+  }
+}
